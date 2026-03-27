@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+requests
+kubernetes
+sqlalchemy
+pg8000
