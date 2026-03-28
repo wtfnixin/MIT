@@ -135,6 +135,10 @@ def recover_service(service_name: str, db: Session = Depends(get_db)):
         
     pod_deleted, timestamp = recovery.restart_pod(service_name)
     
+    # Immediately wipe chaos so the system can heal during the 20-second verification wait!
+    cleanup_all()
+    prometheus_client.clear_demo_chaos(service_name)
+    
     baseline = detector.get_baseline(service_name)
     baseline_avg = baseline["p95_latency_ms_mean"]
     

@@ -10,6 +10,7 @@ function formatScenarioLabel(value) {
 
 export default function ChaosControls({
   onLog,
+  onInject,
   serviceOptions = [],
   scenarioOptions = [],
 }) {
@@ -44,6 +45,7 @@ export default function ChaosControls({
         level: 'chaos',
         msg: `Chaos injected -> ${service} (${scenario}) - ${res.message || 'OK'}`,
       });
+      if (onInject) onInject(service);
     } catch (e) {
       onLog({ level: 'anomaly', msg: `Chaos inject failed: ${e.message}` });
     } finally {
@@ -67,38 +69,42 @@ export default function ChaosControls({
 
   return (
     <div className="card" style={{ gridColumn: '1 / -1' }}>
-      <div className="section-title">Chaos Controls</div>
+      <div className="section-title">CHAOS CONTROLS</div>
       <div className="chaos-controls">
-        <div className="form-group">
-          <label className="form-label">Service</label>
-          <select value={service} onChange={(e) => setService(e.target.value)}>
-            {serviceOptions.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
+        <div className="form-group-row">
+          <div className="form-group">
+            <label className="form-label">Service</label>
+            <select value={service} onChange={(e) => setService(e.target.value)}>
+              {serviceOptions.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Scenario</label>
+            <select value={scenario} onChange={(e) => setScenario(e.target.value)}>
+              {scenarioOptions.map((value) => (
+                <option key={value} value={value}>
+                  {formatScenarioLabel(value)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Scenario</label>
-          <select value={scenario} onChange={(e) => setScenario(e.target.value)}>
-            {scenarioOptions.map((value) => (
-              <option key={value} value={value}>
-                {formatScenarioLabel(value)}
-              </option>
-            ))}
-          </select>
+        <div className="form-group-row" style={{ marginTop: 8 }}>
+          <button
+            className="btn btn-danger"
+            onClick={handleInject}
+            disabled={loading || !service || !scenario}
+          >
+            {loading ? 'Injecting...' : 'Inject Chaos'}
+          </button>
+          <button className="btn btn-outline" onClick={handleCleanup} disabled={cleaning}>
+            {cleaning ? 'Cleaning...' : 'Cleanup All'}
+          </button>
         </div>
-        <button
-          className="btn btn-danger"
-          onClick={handleInject}
-          disabled={loading || !service || !scenario}
-        >
-          {loading ? 'Injecting...' : 'Inject Chaos'}
-        </button>
-        <button className="btn btn-outline" onClick={handleCleanup} disabled={cleaning}>
-          {cleaning ? 'Cleaning...' : 'Cleanup All'}
-        </button>
       </div>
     </div>
   );

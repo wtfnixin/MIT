@@ -69,7 +69,7 @@ def _demo_metrics(service: str) -> dict:
         error_rate = max(error_rate, 3.5)
         cpu = max(cpu * 8.0, cpu + 0.05)
         memory *= 1.3
-    elif scenario == "memory_stress":
+    elif scenario == "memory_leak":
         latency *= 2.6
         error_rate = max(error_rate, 2.5)
         cpu *= 1.2
@@ -253,7 +253,7 @@ def _get_memory(service: str) -> float | None:
 
 
 def fetch_metrics(service: str) -> dict:
-    if DEMO_MODE:
+    if DEMO_MODE or _demo_chaos_state.get(service):
         return _demo_metrics(service)
 
     if not PROMETHEUS_URL or not _probe_prometheus():

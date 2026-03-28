@@ -198,6 +198,12 @@ export default function App() {
 
           (async () => {
             try {
+              // Optimistically show recovery on the timeline instantly
+              setIncidents((prev) => [
+                { service, status: 'RECOVERING', timestamp: Math.floor(Date.now() / 1000) },
+                ...prev,
+              ]);
+
               const res = await recoverService(service);
               if (res.status === 'skipped') {
                 addLog({ level: 'info', msg: `Recovery skipped for ${service}: ${res.reason}` });
@@ -260,25 +266,23 @@ export default function App() {
       <div className="main-grid">
         <div className="stat-row">
           <StatCard
-            label="Confidence"
-            value={`${confidence.toFixed(0)}%`}
+            label="CONFIDENCE"
+            value={<span style={{ color: 'var(--purple)' }}>{confidence.toFixed(0)}%</span>}
             sub="threshold: 80%"
-            valueStyle={{ color: confidence >= 80 ? 'var(--red)' : 'var(--blue)', fontSize: '2.4rem' }}
           />
           <StatCard
-            label="Anomaly Votes"
-            value={`${anomalyVotes} / ${totalVotes || 5}`}
+            label="ANOMALY VOTES"
+            value={<><span style={{ color: 'var(--yellow)' }}>{anomalyVotes}</span> <span style={{ color: 'var(--text-muted)' }}>/ {totalVotes || 5}</span></>}
             sub="window: 5"
           />
           <StatCard
-            label="Status"
-            value={globalStatus}
+            label="STATUS"
+            value={<span style={{ color: statusColors[globalStatus] || 'var(--green)' }}>{globalStatus}</span>}
             sub={latestIncident?.service || selected || '--'}
-            valueStyle={{ color: statusColors[globalStatus] || 'var(--text)', fontSize: '1.8rem', paddingTop: 6 }}
           />
           <StatCard
-            label="Incidents"
-            value={incidentCount}
+            label="INCIDENTS"
+            value={<span style={{ color: '#fff' }}>{incidentCount}</span>}
             sub="this session"
           />
         </div>
@@ -301,7 +305,7 @@ export default function App() {
         />
 
         <div className="card" style={{ overflow: 'hidden' }}>
-          <div className="section-title">Action Log</div>
+          <div className="section-title">ACTION LOG</div>
           <div className="action-log-wrap" style={{ maxHeight: 230 }}>
             {logs.map((entry, index) => (
               <div className="log-entry" key={index}>
@@ -314,6 +318,12 @@ export default function App() {
 
         <ChaosControls
           onLog={addLog}
+          onInject={(service) => {
+            setIncidents((prev) => [
+              { service, status: 'INJECTED', timestamp: Math.floor(Date.now() / 1000) },
+              ...prev,
+            ]);
+          }}
           serviceOptions={chaosServices}
           scenarioOptions={chaosScenarios}
         />

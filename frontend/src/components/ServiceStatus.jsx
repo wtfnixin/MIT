@@ -11,7 +11,7 @@ function getBadgeClass(state) {
 export default function ServiceStatus({ services, onSelectService, selectedService }) {
   return (
     <div className="card">
-      <div className="section-title">Service Status</div>
+      <div className="card-label">SERVICE STATUS</div>
       <div className="service-list">
         {Object.entries(services).map(([name, svcState]) => {
           let status = 'HEALTHY';
@@ -25,7 +25,7 @@ export default function ServiceStatus({ services, onSelectService, selectedServi
             <div
               key={name}
               className="service-row"
-              style={selectedService === name ? { borderColor: 'rgba(56,189,248,0.5)', background: 'rgba(56,189,248,0.05)' } : {}}
+              style={selectedService === name ? { borderColor: 'var(--purple-bg)', background: 'var(--purple-bg)' } : {}}
               onClick={() => onSelectService(name)}
               title="Click to view vote buffer & latency"
             >

@@ -6,34 +6,34 @@ export default function VoteBuffer({ votes, confidence, service }) {
 
   return (
     <div className="card">
-      <div className="card-label">Vote Buffer {service ? `· ${service}` : ''}</div>
-      <div className="vote-slots">
+      <div className="card-label">VOTE BUFFER</div>
+      <div className="vote-slots" style={{ marginBottom: 24 }}>
         {slots.map((v, i) => (
           <div
             key={i}
-            className={`vote-slot ${v === 1 ? 'vote-slot-anomaly' : 'vote-slot-normal'}`}
+            className={`vote-slot ${v === 1 ? 'vote-slot-anomaly' : 'vote-slot-empty'}`}
           >
-            {v === 1 ? '!' : v === 0 ? '–' : '·'}
+            {v === 1 ? '!' : '-'}
           </div>
         ))}
-        <span className="vote-count-label">
+        <span style={{ fontSize: 13, color: 'var(--text-dim)', marginLeft: 8, fontFamily: 'var(--font-sans)' }}>
           {anomCount} anomalous
         </span>
       </div>
-      <div className="card-label" style={{ marginBottom: 0 }}>Confidence</div>
-      <div className="conf-bar-wrap">
-        <div className="conf-bar-labels">
-          <span>0%</span>
-          <span style={{ color: 'var(--blue)' }}>{confidence.toFixed(0)}%</span>
-          <span>100%</span>
-        </div>
-        <div className="conf-bar-track">
+      
+      <div className="card-label">CONFIDENCE</div>
+      <div className="conf-bar-wrap" style={{ marginTop: 0 }}>
+        <div className="conf-bar-track" style={{ marginBottom: 12 }}>
           <div
             className="conf-bar-fill"
             style={{ width: `${Math.min(confidence, 100)}%` }}
           />
         </div>
-        <div className="conf-threshold-marker">threshold: 80%</div>
+        <div className="conf-bar-labels" style={{ marginTop: 0, marginBottom: 0 }}>
+          <span>0%</span>
+          <span style={{ color: 'var(--purple)', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{confidence.toFixed(0)}%</span>
+          <span>100%</span>
+        </div>
       </div>
     </div>
   );

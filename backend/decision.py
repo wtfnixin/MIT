@@ -353,7 +353,7 @@ def classify_scenario(metrics: MetricsDict, service: str) -> str:
         return "cpu_stress"
 
     if memory_ratio > 5.0 and latency_ratio > 2.0:
-        return "memory_stress"
+        return "memory_leak"
 
     if latency_ratio > 7.0 and error_ratio > 3.0 and cpu_ratio < 0.5:
         return "pod_kill"
